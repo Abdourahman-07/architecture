@@ -1,9 +1,7 @@
-const baseUrl = "http://localhost:5678/api";
+import { getWorks } from "./api.js";
+import { initEdit } from "./editWorks.js";
 
-async function getWorks() {
-  const worksApi = await fetch(`${baseUrl}/works`);
-  return await worksApi.json(worksApi);
-}
+const baseUrl = "http://localhost:5678/api";
 
 const createHtmlWork = (works) => {
   return works
@@ -68,12 +66,42 @@ async function listenFilters() {
   });
 }
 
+function listenLogoutBtn() {
+  const logoutBtn = document.querySelector(".login");
+  logoutBtn.addEventListener("click", function (event) {
+    const edit = document.querySelector(".edit");
+    const boxTitleEdit = document.querySelector(".box-titleEdit");
+    const header = document.querySelector("header");
+    if (this.textContent === "logout") {
+      event.preventDefault();
+      localStorage.removeItem("localToken");
+      this.innerHTML = "login";
+      edit.remove();
+      boxTitleEdit.remove();
+      header.classList.remove("headerEdit");
+    }
+  });
+}
+
+function checkLogin() {
+  const userToken = localStorage.getItem("localToken");
+  const loginLink = document.querySelector(".login");
+  if (userToken) {
+    loginLink.innerHTML = "logout";
+  } else {
+    loginLink.innerHTML = "login";
+  }
+}
+
 const initApplication = async () => {
   const allWorks = await getWorks();
   displayWorks(allWorks);
   const allCategories = await getCategories();
   displayCategories(allCategories);
   listenFilters();
+  checkLogin();
+  listenLogoutBtn();
+  initEdit();
 };
 
 initApplication();
