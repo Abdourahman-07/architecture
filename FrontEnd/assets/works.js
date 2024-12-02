@@ -1,4 +1,5 @@
 import { getWorks } from "./api.js";
+import { getCategories } from "./api.js";
 import { initEdit } from "./editWorks.js";
 
 const baseUrl = "http://localhost:5678/api";
@@ -22,10 +23,6 @@ const displayWorks = (works) => {
 
 function filterWorksByCategory(categoryBtn, works) {
   return works.filter((work) => work.category.name === categoryBtn);
-}
-async function getCategories() {
-  const categoriesApi = await fetch(`${baseUrl}/categories`);
-  return await categoriesApi.json(categoriesApi);
 }
 
 const createHtmlCategories = (categories) => {
@@ -88,6 +85,7 @@ function checkLogin() {
   const loginLink = document.querySelector(".login");
   if (userToken) {
     loginLink.innerHTML = "logout";
+    initEdit();
   } else {
     loginLink.innerHTML = "login";
   }
@@ -101,7 +99,6 @@ const initApplication = async () => {
   listenFilters();
   checkLogin();
   listenLogoutBtn();
-  initEdit();
 };
 
 initApplication();

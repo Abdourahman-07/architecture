@@ -15,9 +15,13 @@ function addWorks(works) {
 
 function listenCloseModale() {
   const closeIcon = document.querySelector(".box-modale .modale i");
-  const modale = document.querySelector(".modale");
+  const boxModale = document.querySelector(".box-modale");
   closeIcon.addEventListener("click", () => {
-    modale.remove();
+    const opacityBox = document.querySelector(".background-modale");
+    const modale = document.querySelector(".modale");
+    modale.innerHTML = `<i class="fa-solid fa-xmark"></i><h2 class="modale-title">Gallerie photo</h2><div class="modale-gallery"></div><hr></hr><button class="add-picture">Ajouter une photo</button>`;
+    boxModale.classList.add("hide-modale");
+    opacityBox.classList.add("hide");
   });
 }
 
@@ -33,13 +37,12 @@ function listenAddPict() {
         <p>jpg, png : 4mo max</p>
       </div>
       <div class="title"><label for="titleInp">Titre</label><input class="titleInp" type="text"></div>
-      <div class="category"><label for="catInp">Catégorie</label><input class="catInp" type="text"></div>
+      <div class="category"><label for="catInp">Catégorie</label><select class="catInp"></select></div>
       <hr></hr>
       <button class="valid-picture">Valider</button>`;
     listenCloseModale();
   });
 }
-//: todo: ne pas regénérer l'icone de fermeture
 
 async function modale() {
   const allWorks = await getWorks();
@@ -63,11 +66,12 @@ function setEditHtml() {
 
 function listenEditBtn() {
   const editBtn = document.querySelector(".edit");
-  const box = document.querySelector(".box-modale");
+  const boxModale = document.querySelector(".box-modale");
+  const opacityBox = document.querySelector(".background-modale");
   editBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    box.innerHTML +=
-      '<div class="modale"><i class="fa-solid fa-xmark"></i><h2 class="modale-title">Gallerie photo</h2><div class="modale-gallery"></div><hr></hr><button class="add-picture">Ajouter une photo</button></div>';
+    boxModale.classList.remove("hide-modale");
+    opacityBox.classList.remove("hide");
     modale();
   });
 }
