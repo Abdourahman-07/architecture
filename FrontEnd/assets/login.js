@@ -12,7 +12,7 @@ async function responseApi(loginData) {
     return await askingLogin.json();
   } catch (error) {
     const errorHtml = document.querySelector(".errorSubmit");
-    errorHtml.innerHTML = `(service non opérationnel, veuillez réessayer ultérieurement)${error}`;
+    errorHtml.innerHTML = `(service non opérationnel, veuillez réessayer ultérieurement)`;
   }
 }
 

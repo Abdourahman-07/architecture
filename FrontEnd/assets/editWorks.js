@@ -1,27 +1,37 @@
 import { getWorks } from "./api.js";
 
 function addWorks(works) {
+  const gallery = document.querySelector(".modale-gallery");
   const createHtmlWork = (works) => {
     return works
       .map((work) => {
-        return `<figure><img src="${work.imageUrl}" alt="${work.title}" /><i class="fa-solid fa-trash-can"></i></figure>`;
+        return `<figure id="${work.id}"><img " src="${work.imageUrl}" alt="${work.title}" /><i class="fa-solid fa-trash-can"></i></figure>`;
       })
       .join("");
   };
   const htmlWork = createHtmlWork(works);
-  const gallery = document.querySelector(".modale-gallery");
   gallery.innerHTML = htmlWork;
+}
+
+function closeModale() {
+  const boxModale = document.querySelector(".box-modale");
+  const modale = document.querySelector(".modale");
+  modale.innerHTML = `<i class="fa-solid fa-xmark"></i>
+    <h2 class="modale-title">Gallerie photo</h2>
+    <div class="modale-gallery"></div>
+    <hr></hr>
+    <button class="add-picture">Ajouter une photo</button>`;
+  boxModale.classList.add("hide");
 }
 
 function listenCloseModale() {
   const closeIcon = document.querySelector(".box-modale .modale i");
-  const boxModale = document.querySelector(".box-modale");
+  const opacityBox = document.querySelector(".background-modale");
   closeIcon.addEventListener("click", () => {
-    const opacityBox = document.querySelector(".background-modale");
-    const modale = document.querySelector(".modale");
-    modale.innerHTML = `<i class="fa-solid fa-xmark"></i><h2 class="modale-title">Gallerie photo</h2><div class="modale-gallery"></div><hr></hr><button class="add-picture">Ajouter une photo</button>`;
-    boxModale.classList.add("hide-modale");
-    opacityBox.classList.add("hide");
+    closeModale();
+  });
+  opacityBox.addEventListener("click", () => {
+    closeModale();
   });
 }
 
@@ -44,11 +54,31 @@ function listenAddPict() {
   });
 }
 
+function deleteWorks() {
+  const trashBox = document.querySelectorAll(".fa-trash-can");
+  trashBox.forEach((trash) => {
+    trash.addEventListener("click", (event) => {
+      const trashElement = event.target;
+      const id = trashElement.parentElement.id;
+      const token = localStorage.getItem("localToken");
+      fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(id, token);
+    });
+  });
+}
+
 async function modale() {
   const allWorks = await getWorks();
   addWorks(allWorks);
-  listenAddPict();
   listenCloseModale();
+  listenAddPict();
+  deleteWorks();
 }
 
 function setEditHtml() {
@@ -67,11 +97,9 @@ function setEditHtml() {
 function listenEditBtn() {
   const editBtn = document.querySelector(".edit");
   const boxModale = document.querySelector(".box-modale");
-  const opacityBox = document.querySelector(".background-modale");
   editBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    boxModale.classList.remove("hide-modale");
-    opacityBox.classList.remove("hide");
+    boxModale.classList.remove("hide");
     modale();
   });
 }

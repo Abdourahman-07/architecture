@@ -2,8 +2,6 @@ import { getWorks } from "./api.js";
 import { getCategories } from "./api.js";
 import { initEdit } from "./editWorks.js";
 
-const baseUrl = "http://localhost:5678/api";
-
 const createHtmlWork = (works) => {
   return works
     .map((work) => {
