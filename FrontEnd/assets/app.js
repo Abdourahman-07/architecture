@@ -5,7 +5,7 @@ import { initEdit } from "./editWorks.js";
 const createHtmlWork = (works) => {
   return works
     .map((work) => {
-      return `<figure class="maFigure">
+      return `<figure class="maFigure figure${work.id}">
         <img src="${work.imageUrl}" alt="${work.title}" />
         <figcaption>${work.title}</figcaption>
         </figure>`;

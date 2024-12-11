@@ -27,21 +27,29 @@
 }
 
 .modale {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 10px;
   background-color: white;
+  height: 620px;
   width: 600px;
   opacity: 1;
   z-index: 2;
 }
 
-.modale i {
-  position: relative;
-  top: 20px;
-  left: 44%;
+.fa-arrow-left,
+.fa-xmark {
+  position: absolute;
   font-size: 25px;
+  top: 20px;
+}
+.fa-arrow-left {
+  left: 20px;
+}
+.fa-xmark {
+  right: 20px;
 }
 
 .modale-title,
@@ -61,7 +69,7 @@
   width: 400px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .errorSubmit {
@@ -71,6 +79,7 @@
 .modale-gallery figure {
   width: 70px;
   height: 100px;
+  margin: 5px;
 }
 
 .modale-gallery figure img {
@@ -117,23 +126,74 @@
   flex-direction: column;
   align-items: center;
   width: 400px;
-  height: 200px;
-  padding-bottom: 20px;
+  height: 220px;
 }
 
 .picture i {
   font-size: 100px;
   left: 0px;
-  margin-bottom: 5px;
+  margin: 10px 0px 5px 0px;
   color: #b9c5cc;
 }
 
-.picture button {
+.picture p {
+  margin-top: 10px;
+}
+
+.fakeBtn {
+  position: relative;
+  border-radius: 20px;
+  width: 200px;
+  height: 45px;
   background-color: #cbd6dc;
   color: #306685;
+  margin: 10px;
 }
-.picture button:hover {
-  background-color: #cbd6dc;
+
+.fakeBtn span {
+  position: absolute;
+  left: 35px;
+  top: 14px;
+  font-size: 16px;
+}
+
+.fakeBtn .addPictBtn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 3;
+}
+
+.fakeBtn .addPictBtnNew {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  opacity: 0;
+  height: 250px;
+  width: 400px;
+  left: -100px;
+  top: -130px;
+}
+
+.box-new-picture {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 400px;
+  background-color: #e8f1f6;
+  z-index: 2;
+}
+
+.box-new-picture img {
+  position: relative;
+  z-index: 2;
+}
+
+.pictureShow {
+  display: block;
+  height: 220px;
 }
 
 .title,
@@ -155,6 +215,10 @@ select {
   border: none;
   box-shadow: 2px 2px 4px rgb(206, 204, 204);
   background-color: white;
+}
+
+select {
+  width: 404px;
 }
 
 .valid-picture {
