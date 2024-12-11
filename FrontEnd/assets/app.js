@@ -44,11 +44,12 @@ const resetStyleButtonFilter = (selectedButton) => {
   });
   selectedButton.classList.add("filter-selected");
 };
-async function listenFilters() {
+
+function listenFilters() {
   const filterButtons = document.querySelectorAll(".filter");
-  const works = await getWorks();
   filterButtons.forEach((button) => {
-    button.addEventListener("click", function () {
+    button.addEventListener("click", async function () {
+      const works = await getWorks();
       const categoryBtn = button.textContent;
       resetStyleButtonFilter(this);
       const filterWorks = filterWorksByCategory(categoryBtn, works);
@@ -90,8 +91,13 @@ function checkLogin() {
 }
 
 const initApplication = async () => {
-  const allWorks = await getWorks();
-  displayWorks(allWorks);
+  try {
+    const allWorks = await getWorks();
+    displayWorks(allWorks);
+  } catch (error) {
+    const gallery = document.querySelector(".gallery");
+    gallery.innerHTML = `<p class="errorSubmit">(Service non opérationnel, les projets ne peuvent s'afficher, veuillez rechargez la page ultérieurement)</p>`;
+  }
   const allCategories = await getCategories();
   displayCategories(allCategories);
   listenFilters();

@@ -33,7 +33,7 @@
   align-items: center;
   border-radius: 10px;
   background-color: white;
-  height: 620px;
+  height: 630px;
   width: 600px;
   opacity: 1;
   z-index: 2;
@@ -72,11 +72,8 @@
   justify-content: flex-start;
 }
 
-.errorSubmit {
-  color: red;
-}
-
 .modale-gallery figure {
+  position: relative;
   width: 70px;
   height: 100px;
   margin: 5px;
@@ -84,13 +81,14 @@
 
 .modale-gallery figure img {
   width: 100%;
+  height: 100%;
 }
 
 .modale-gallery figure i {
   border-radius: 3px;
-  position: relative;
-  top: -90px;
-  left: 48px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
   color: white;
   background-color: black;
   padding: 4px;
@@ -111,12 +109,48 @@
   height: 40px;
 }
 
-.add-picture {
+.add-picture,
+.valid-picture-enabled {
   background-color: #1d6154;
   color: white;
 }
-.add-picture:hover {
+.add-picture:hover,
+.valid-picture-enabled:hover {
   background-color: #0e2f28;
+}
+
+.confMes {
+  position: absolute;
+  top: 200px;
+  background-color: rgb(233, 227, 227);
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px black;
+}
+
+.confMes p {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.delete,
+.no-delete {
+  box-shadow: 3px 3px 3px black;
+}
+
+.delete {
+  background-color: rgb(233, 111, 111);
+}
+.delete:hover {
+  background-color: red;
+}
+
+.no-delete {
+  background-color: rgb(199, 191, 118);
+}
+.no-delete:hover {
+  background-color: yellow;
 }
 
 .picture {
@@ -207,8 +241,8 @@ label {
   color: #3d3d3d;
 }
 
-input,
-select {
+.modale input,
+.modale select {
   margin-top: 5px;
   height: 40px;
   width: 400px;
@@ -221,7 +255,7 @@ select {
   width: 404px;
 }
 
-.valid-picture {
+.valid-picture-disabled {
   background-color: #a7a7a7;
   color: white;
 }
