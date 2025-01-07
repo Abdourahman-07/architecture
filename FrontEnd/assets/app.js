@@ -1,6 +1,11 @@
-import { getWorks } from "./api.js";
-import { getCategories } from "./api.js";
+import { getWorks, getCategories } from "./api.js";
 import { initEdit } from "./editWorks.js";
+import { getToken, removeToken } from "./helpers.js";
+
+function setErrorGallery() {
+  const gallery = document.querySelector(".gallery");
+  gallery.innerHTML = `<p class="errorSubmit">(Service non opérationnel, veuillez rechargez la page ultérieurement)</p>`;
+}
 
 const createHtmlWork = (works) => {
   return works
@@ -49,14 +54,18 @@ function listenFilters() {
   const filterButtons = document.querySelectorAll(".filter");
   filterButtons.forEach((button) => {
     button.addEventListener("click", async function () {
-      const works = await getWorks();
-      const categoryBtn = button.textContent;
-      resetStyleButtonFilter(this);
-      const filterWorks = filterWorksByCategory(categoryBtn, works);
-      if (button.textContent !== "Tous") {
-        displayWorks(filterWorks);
-      } else {
-        displayWorks(works);
+      try {
+        const works = await getWorks();
+        const categoryBtn = button.textContent;
+        resetStyleButtonFilter(this);
+        const filterWorks = filterWorksByCategory(categoryBtn, works);
+        if (button.textContent !== "Tous") {
+          displayWorks(filterWorks);
+        } else {
+          displayWorks(works);
+        }
+      } catch (error) {
+        setErrorGallery();
       }
     });
   });
@@ -70,7 +79,7 @@ function listenLogoutBtn() {
     const header = document.querySelector("header");
     if (this.textContent === "logout") {
       event.preventDefault();
-      localStorage.removeItem("localToken");
+      removeToken();
       this.innerHTML = "login";
       edit.remove();
       boxTitleEdit.remove();
@@ -80,9 +89,8 @@ function listenLogoutBtn() {
 }
 
 function checkLogin() {
-  const userToken = localStorage.getItem("localToken");
   const loginLink = document.querySelector(".login");
-  if (userToken) {
+  if (getToken()) {
     loginLink.innerHTML = "logout";
     initEdit();
   } else {
@@ -93,13 +101,13 @@ function checkLogin() {
 const initApplication = async () => {
   try {
     const allWorks = await getWorks();
+    const allCategories = await getCategories();
     displayWorks(allWorks);
+    displayCategories(allCategories);
   } catch (error) {
-    const gallery = document.querySelector(".gallery");
-    gallery.innerHTML = `<p class="errorSubmit">(Service non opérationnel, les projets ne peuvent s'afficher, veuillez rechargez la page ultérieurement)</p>`;
+    setErrorGallery();
   }
-  const allCategories = await getCategories();
-  displayCategories(allCategories);
+
   listenFilters();
   checkLogin();
   listenLogoutBtn();

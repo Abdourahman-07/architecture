@@ -64,6 +64,7 @@
   color: black;
 }
 
+/*************** 1ERE PAGE ***************/
 .modale-gallery {
   height: 350px;
   width: 400px;
@@ -109,6 +110,11 @@
   height: 40px;
 }
 
+.valid-picture-disabled {
+  background-color: #a7a7a7;
+  color: white;
+}
+
 .add-picture,
 .valid-picture-enabled {
   background-color: #1d6154;
@@ -120,39 +126,49 @@
 }
 
 .confMes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 450px;
   position: absolute;
   top: 200px;
-  background-color: rgb(233, 227, 227);
+  background-color: white;
   text-align: center;
-  padding: 10px;
+  padding: 10px 10px 10px 10px;
   border-radius: 10px;
   box-shadow: 5px 5px 10px black;
 }
 
+.confMes-hide {
+  display: none;
+}
+
 .confMes p {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
 }
 
 .delete,
 .no-delete {
+  color: white;
   box-shadow: 3px 3px 3px black;
+}
+.delete:hover,
+.no-delete:hover {
+  scale: 1.1;
+  cursor: pointer;
 }
 
 .delete {
-  background-color: rgb(233, 111, 111);
+  background-color: #1d6154;
 }
-.delete:hover {
-  background-color: red;
-}
-
 .no-delete {
-  background-color: rgb(199, 191, 118);
-}
-.no-delete:hover {
-  background-color: yellow;
+  background-color: #0e2f28;
 }
 
+/*************** 2EME PAGE ***************/
 .picture {
   border-radius: 5px;
   background-color: #e8f1f6;
@@ -253,9 +269,4 @@ label {
 
 select {
   width: 404px;
-}
-
-.valid-picture-disabled {
-  background-color: #a7a7a7;
-  color: white;
 }

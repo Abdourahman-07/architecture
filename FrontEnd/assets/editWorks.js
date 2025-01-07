@@ -1,5 +1,5 @@
-import { getWorks } from "./api.js";
-import { getCategories } from "./api.js";
+import { getWorks, saveWork, getCategories, deleteWork } from "./api.js";
+import { getToken } from "./helpers.js";
 
 function addWorks(works) {
   const gallery = document.querySelector(".modale-gallery");
@@ -14,28 +14,26 @@ function addWorks(works) {
   gallery.innerHTML = htmlWork;
 }
 
-function closeModale() {
-  const boxModale = document.querySelector(".box-modale");
+function setFirstPageModale() {
   const modale = document.querySelector(".modale");
   modale.innerHTML = `<i class="fa-solid fa-xmark"></i>
     <h2 class="modale-title">Gallerie photo</h2>
     <div class="modale-gallery"></div>
     <hr></hr>
     <button class="add-picture">Ajouter une photo</button>
-    <div class="confMes hide"><p>Êtes vous sûr de votre choix ?</p><button class="delete">Supprimer</button><button class="no-delete">Annuler</button></div>`;
+    <div class="confMes-hide"><p>Êtes vous sûr de votre choix ?</p><button class="delete">Supprimer</button><button class="no-delete">Annuler</button></div>`;
+}
+
+function closeModale() {
+  const boxModale = document.querySelector(".box-modale");
+  setFirstPageModale();
   boxModale.classList.add("hide");
 }
 
 function listenArrowBack() {
   const arrow = document.querySelector(".fa-arrow-left");
   arrow.addEventListener("click", () => {
-    const modalePage = document.querySelector(".modale"); //en faire une seule fonction
-    modalePage.innerHTML = `<i class="fa-solid fa-xmark"></i>
-    <h2 class="modale-title">Gallerie photo</h2>
-    <div class="modale-gallery"></div>
-    <hr></hr>
-    <button class="add-picture">Ajouter une photo</button>
-    <div class="confMes hide"><p>Êtes vous sûr de votre choix ?</p><button class="delete">Supprimer</button><button class="no-delete">Annuler</button></div>`;
+    setFirstPageModale();
     modale();
   });
 }
@@ -64,7 +62,8 @@ async function setPictureModale() {
     <div class="title"><label for="titleInp">Titre</label><input class="titleInp" type="text"></div>
     <div class="category"><label for="catInp">Catégorie</label><select class="catInp"></select></div>
     <hr></hr>
-    <button class="valid-picture">Valider</button>`;
+    <button class="valid-picture valid-picture-disabled">Valider</button>
+    <p class="errorSubmit hide">(Assurez vous d'ajouter une image valide ainsi qu'un titre à votre projet.)</p>`;
   const listCategories = document.querySelector("select");
   try {
     const allCategories = await getCategories();
@@ -74,7 +73,7 @@ async function setPictureModale() {
     });
   } catch (error) {
     const galleryModale = document.querySelector(".modale");
-    galleryModale.innerHTML += `<p class="errorSubmit">(Service non opérationnel, les projets ne peuvent s'afficher, veuillez rechargez la page ultérieurement)</p>`;
+    galleryModale.innerHTML += `<p class="errorSubmit">(Service non opérationnel, veuillez rechargez la page ultérieurement)</p>`;
   }
 }
 
@@ -97,41 +96,49 @@ function listenInputPicture() {
         input.setAttribute("class", "addPictBtnNew");
       };
     } else {
-      input.value = "";
+      input.value = null;
     }
   });
 }
 
-async function addNewWork(title, category, image, tokenUser) {
+async function addNewWork(title, category, image, token) {
   const formData = new FormData();
   formData.append("image", image);
   formData.append("title", title);
   formData.append("category", category + 1);
+  try {
+    const responseApiJson = await saveWork(token, formData);
+    const gallery = document.querySelector(".gallery");
+    gallery.innerHTML += `<figure class="maFigure figure${responseApiJson.id}"><img src="${responseApiJson.imageUrl}" alt="${title}" /><figcaption>${title}</figcaption></figure>`;
+    closeModale();
+  } catch (error) {
+    const pictureModale = document.querySelector(".modale");
+    pictureModale.innerHTML += `<p class="errorSubmit">(Service non opérationnel, veuillez rechargez la page ultérieurement)</p>`;
+  }
+}
 
-  const responseApi = await fetch("http://localhost:5678/api/works", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${tokenUser}`,
-    },
-    body: formData,
-  });
-  const responseApiJson = await responseApi.json();
-  const gallery = document.querySelector(".gallery");
-  gallery.innerHTML += `<figure class="maFigure figure${responseApiJson.id}"><img src="${responseApiJson.imageUrl}" alt="${title}" /><figcaption>${title}</figcaption></figure>`;
+function safeString(string) {
+  return string.replace(/[=.<>/]/g, "");
 }
 
 function listenSubmit() {
   const submitBtn = document.querySelector(".valid-picture");
   submitBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    const token = localStorage.getItem("localToken");
     const newTitle = document.querySelector(".titleInp").value;
     const list = document.querySelector("select");
     const categorySelected = list.selectedIndex;
     const newPicture = document.querySelector(".fakeBtn input").files[0];
     if (newTitle.trim() && newPicture !== undefined) {
-      addNewWork(newTitle, categorySelected, newPicture, token);
-      closeModale();
+      addNewWork(
+        safeString(newTitle),
+        categorySelected,
+        newPicture,
+        getToken()
+      );
+    } else {
+      const pictureModale = document.querySelector(".modale .errorSubmit");
+      pictureModale.classList.remove("hide");
     }
   });
 }
@@ -168,39 +175,37 @@ function listenAddPict() {
   });
 }
 
-function deleteWork(idWork) {
+function deleteWorkHtml(idWork) {
   const figureToDelete = document.querySelector(`.figure${idWork}`);
   figureToDelete.remove();
 }
 
-function listenDeleteBtn(event) {
+async function listenDeleteBtn(event) {
   const trashElement = event.target;
   const id = trashElement.parentElement.id;
-  const token = localStorage.getItem("localToken");
-  fetch(`http://localhost:5678/api/works/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  closeModale();
-  deleteWork(id);
+  try {
+    await deleteWork(getToken(), id);
+    deleteWorkHtml(id);
+    closeModale();
+  } catch (error) {
+    const confirmataionMessage = document.querySelector(".confMes");
+    confirmataionMessage.innerHTML = `<p class="errorSubmit">(Service non opérationnel, veuillez rechargez la page ultérieurement)</p>`;
+  }
 }
 
 function listenTrash() {
   const trashBox = document.querySelectorAll(".fa-trash-can");
   trashBox.forEach((trash) => {
     trash.addEventListener("click", (event) => {
-      const confMessageSelected = document.querySelector(".confMes");
-      confMessageSelected.classList.remove("hide");
+      const confMessageSelected = document.querySelector(".confMes-hide");
+      confMessageSelected.setAttribute("class", "confMes");
       const deleteBtn = document.querySelector(".delete");
       const noDeleteBtn = document.querySelector(".no-delete");
       deleteBtn.addEventListener("click", () => {
         listenDeleteBtn(event);
       });
       noDeleteBtn.addEventListener("click", () => {
-        confMessageSelected.classList.add("hide");
+        confMessageSelected.setAttribute("class", "confMes-hide");
       });
     });
   });
@@ -223,8 +228,7 @@ async function modale() {
 function setEditHtml() {
   const editBox = document.querySelector("#portfolio h2");
   const header = document.querySelector("header");
-  const userToken = localStorage.getItem("localToken");
-  if (userToken) {
+  if (getToken()) {
     editBox.innerHTML +=
       '<a class="edit" href="#"><i class="fa-regular fa-pen-to-square"></i>modifier</a>';
     header.innerHTML +=

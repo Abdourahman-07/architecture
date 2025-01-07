@@ -1,15 +1,9 @@
-const baseUrl = "http://localhost:5678/api";
+import { connectUser } from "./api.js";
+import { setToken } from "./helpers.js";
 
 async function responseApi(loginData) {
   try {
-    const askingLogin = await fetch(`${baseUrl}/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    });
-    return await askingLogin.json();
+    return await connectUser(loginData);
   } catch (error) {
     const errorHtml = document.querySelector(".errorSubmit");
     errorHtml.innerHTML = `(service non opérationnel, veuillez réessayer ultérieurement)`;
@@ -36,8 +30,7 @@ function responseManagement(response) {
   } else {
     errorHtml.innerHTML = "";
     const token = response.token;
-    console.log(token);
-    localStorage.setItem("localToken", token);
+    setToken(token);
     window.location.replace("index.html");
     return token;
   }

@@ -137,6 +137,7 @@ body {
   background-color: #fffef8;
 }
 
+/*************** HEADER ***************/
 .box-titleEdit {
   position: absolute;
   top: 0px;
@@ -162,6 +163,7 @@ header {
   margin-top: 80px;
 }
 
+/*************** MAIN ***************/
 section {
   margin: 50px 0;
 }
@@ -283,9 +285,14 @@ nav li a:hover {
   grid-row-gap: 20px;
 }
 
+.gallery figure {
+  margin-bottom: 10px;
+}
+
 .gallery img {
   width: 100%;
   height: 100%;
+  margin-bottom: 3px;
 }
 #contact {
   width: 50%;
@@ -329,13 +336,14 @@ input[type="submit"] {
   border-radius: 60px;
 }
 
+.errorSubmit {
+  color: red;
+  margin: 5px;
+}
+
+/**************** FOOTER ***************/
 footer nav ul {
   display: flex;
   margin: 2em;
   justify-content: flex-end;
-}
-
-.errorSubmit {
-  color: red;
-  margin: 5px;
 }
