@@ -228,12 +228,14 @@ async function modale() {
 function setEditHtml() {
   const editBox = document.querySelector("#portfolio h2");
   const header = document.querySelector("header");
+  const filters = document.querySelector(".filters");
   if (getToken()) {
     editBox.innerHTML +=
       '<a class="edit" href="#"><i class="fa-regular fa-pen-to-square"></i>modifier</a>';
     header.innerHTML +=
       '<div class="box-titleEdit"><span class="titleEdit"><i class="fa-regular fa-pen-to-square"></i>mode édition</span><div>';
     header.classList.add("headerEdit");
+    filters.classList.add("hide");
   }
 }
 

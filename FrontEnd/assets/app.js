@@ -77,6 +77,7 @@ function listenLogoutBtn() {
     const edit = document.querySelector(".edit");
     const boxTitleEdit = document.querySelector(".box-titleEdit");
     const header = document.querySelector("header");
+    const filters = document.querySelector(".filters");
     if (this.textContent === "logout") {
       event.preventDefault();
       removeToken();
@@ -84,6 +85,7 @@ function listenLogoutBtn() {
       edit.remove();
       boxTitleEdit.remove();
       header.classList.remove("headerEdit");
+      filters.classList.remove("hide");
     }
   });
 }
